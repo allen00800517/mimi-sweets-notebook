@@ -1030,10 +1030,24 @@ render(); showGuide();
 // sit beneath it, but the title row and everything else stay below it (--sat, measured by a probe).
 const safeProbe = document.body.appendChild(Object.assign(document.createElement('div'), { className: 'safe-probe' }));
 const safeTop = () => safeProbe.offsetHeight, safeBottom = () => safeProbe.offsetWidth;
+// v89 · An iPhone home-screen app reports innerHeight / 100dvh without the status bar (and may fire no resize when it
+// corrects), which left a dark band along the bottom. A home-screen app always covers the whole screen, so there the
+// screen height wins when it is only slightly larger (same fix as 麻將篇 viewport.mjs). --app-h feeds the full-screen
+// pages (title, album, finale) and fitLayout. Safari and other browsers are unchanged.
+const homeScreenApp = () => { const m = q => { try { return matchMedia(q).matches; } catch { return false; } }; return navigator.standalone === true || m('(display-mode: standalone)') || m('(display-mode: fullscreen)'); };
+function appHeight() {
+  let h = Math.round(window.visualViewport?.height || innerHeight);
+  if (homeScreenApp() && screen.width && screen.height) {
+    const H = innerWidth <= innerHeight ? Math.max(screen.width, screen.height) : Math.min(screen.width, screen.height);
+    if (H >= innerHeight && H - innerHeight <= 120) h = H;
+  }
+  document.documentElement.style.setProperty('--app-h', h + 'px'); return h;
+}
+appHeight();
 function fitLayout() {
   // (see below) the picture's crop moves up to the shelves when it is only a strip, so no face is cut at the eyes
   const shell = document.querySelector('.game-shell'), scene = shell.querySelector('.shop-scene'), frame = shell.querySelector('.board-frame');
-  const vh = Math.round(window.visualViewport?.height || innerHeight), w = shell.clientWidth, sat = safeTop();
+  const vh = appHeight(), w = shell.clientWidth, sat = safeTop();
   shell.classList.remove('compact'); frame.style.width = ''; scene.style.height = '0px'; shell.style.paddingTop = '';
   let room = vh - shell.getBoundingClientRect().height - sat; // what is left below the status bar
   scene.style.objectPosition = room < w * .34 ? 'center 6%' : '';
@@ -1104,19 +1118,6 @@ function popTitle(dialog) {
   titleBurst(dialog);
   titleTimer = setTimeout(() => { dialog.classList.remove('popping'); dialog.classList.add('popped'); }, TITLE_POP.dur);
 }
-// v88 · Cover layout (see style.css): on a screen taller than the 9:16 cover it is fitted almost whole from the top,
-// with a blurred copy below; the buttons move into that room when it is at least a button tall.
-const TITLE_RATIO = 900 / 1600, TITLE_CROP = .02;
-function layoutTitle() {
-  const d = $('title-dialog'); if (!d.open) return;
-  const W = d.clientWidth, H = d.clientHeight, tall = W / H < TITLE_RATIO - .002;
-  d.classList.toggle('tall', tall);
-  if (!tall) { d.classList.remove('dock'); return; }
-  const fw = Math.min(W / (1 - 2 * TITLE_CROP), H * TITLE_RATIO), fh = fw / TITLE_RATIO;
-  d.style.setProperty('--fw', fw.toFixed(1) + 'px'); d.style.setProperty('--fh', fh.toFixed(1) + 'px');
-  d.classList.toggle('dock', H - fh - safeBottom() >= 82);
-}
-window.addEventListener('resize', layoutTitle); window.visualViewport?.addEventListener('resize', layoutTitle);
 function showTitle() {
   const dialog = $('title-dialog'), bg = dialog.querySelector('.title-bg'), logo = dialog.querySelector('.title-logo');
   clearTimeout(titleTimer); cancelAnimationFrame(titleRaf); dialog.querySelector('.title-burst').replaceChildren();
@@ -1129,7 +1130,7 @@ function showTitle() {
     setTimeout(() => { dialog.close(); dialog.classList.remove('leaving'); afterTitle(); }, window.__CAKE_TEST_FAST__ ? 0 : 420);
   };
   dialog.oncancel = event => event.preventDefault();
-  dialog.showModal(); layoutTitle();
+  dialog.showModal();
   // The prompt appears only once the cover is on screen, never over an empty background; the pop waits for the
   // cover and the logo to be decoded (at most 2.5 s) so it is never spent on a blank screen.
   const shown = () => dialog.classList.add('ready');

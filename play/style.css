@@ -94,7 +94,7 @@ body.dev .studio-entry{display:block}
 .goal-chip.bonus{background:#f6eedb;border-color:#e3cf9f;color:#9a6a2c}
 
 /* Memory album: one full-screen, swipeable viewer for every story scene. */
-.album-viewer{width:100vw;max-width:480px;height:100dvh;max-height:none;margin:0 auto;padding:0;border:0;border-radius:0;background:#1d1416;color:#fff7ec;overflow:hidden}
+.album-viewer{width:100vw;max-width:480px;height:var(--app-h,100dvh);max-height:none;margin:0 auto;padding:0;border:0;border-radius:0;background:#1d1416;color:#fff7ec;overflow:hidden}
 .album-viewer::backdrop{background:#1d1416}
 .av-track{display:flex;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior:contain}
 .av-track::-webkit-scrollbar{display:none}
@@ -134,19 +134,19 @@ body.dev .studio-entry{display:block}
 .av-flying{position:fixed;z-index:5;margin:0;object-fit:cover;pointer-events:none;box-shadow:0 14px 34px #00000073}
 .av-tip{margin:10px 0 0;font-size:11.5px;color:#cfae9c;letter-spacing:.04em}
 .album-viewer.photo-only .av-pic{padding-top:0}
-.album-viewer.photo-only .av-slide:not(.locked):not(.tall) .av-pic img{width:min(calc(100dvh - 120px),calc(min(100vw,480px) * 1.66));max-width:none;max-height:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(90deg)}
+.album-viewer.photo-only .av-slide:not(.locked):not(.tall) .av-pic img{width:min(calc(var(--app-h,100dvh) - 120px),calc(min(100vw,480px) * 1.66));max-width:none;max-height:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(90deg)}
 @media (orientation:landscape) and (max-height:520px){
   .album-viewer{max-width:none}
   .av-wall-photos{grid-template-columns:repeat(4,1fr);max-width:none}
   .av-snap.tall{grid-column:auto;width:100%}
   .album-viewer .av-caption,.av-tip{display:none}
   .album-viewer .av-pic,.album-viewer.photo-only .av-pic{padding-top:0}
-  .album-viewer .av-pic img,.album-viewer.photo-only .av-slide:not(.locked):not(.tall) .av-pic img{position:static;width:auto;height:100dvh;max-width:100%;transform:none;box-shadow:none}
+  .album-viewer .av-pic img,.album-viewer.photo-only .av-slide:not(.locked):not(.tall) .av-pic img{position:static;width:auto;height:var(--app-h,100dvh);max-width:100%;transform:none;box-shadow:none}
 }
 .narration{margin:8px 0 10px!important;line-height:1.7;font-size:13px!important}
 .av-lines .narration{color:#e8cdbb!important}
 
-.film-viewer{width:100vw;max-width:480px;height:100dvh;max-height:none;margin:0 auto;padding:0;border:0;border-radius:0;background:#120c0d;color:#fff;overflow:hidden;cursor:pointer}
+.film-viewer{width:100vw;max-width:480px;height:var(--app-h,100dvh);max-height:none;margin:0 auto;padding:0;border:0;border-radius:0;background:#120c0d;color:#fff;overflow:hidden;cursor:pointer}
 .film-viewer::backdrop{background:#120c0d}
 .film-stage{position:absolute;inset:0;overflow:hidden}
 .film-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;opacity:0;transform:scale(1.08);transition:opacity 1.6s ease,transform 14s linear}
@@ -182,14 +182,14 @@ body.dev .studio-entry{display:block}
 .av-group:before,.av-group:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,#ffe2d000,#ffe2d080,#ffe2d000)}
 
 /* Title screen: the key visual fills the phone, the logo sits in the open sky, the start button on the pavement. */
-.title-screen{width:100vw;max-width:480px;height:100dvh;max-height:none;margin:0 auto;padding:0;border:0;border-radius:0;background:#f7d9df;overflow:hidden;transition:opacity .4s}
+.title-screen{width:100vw;max-width:480px;height:var(--app-h,100dvh);max-height:none;margin:0 auto;padding:0;border:0;border-radius:0;background:#f7d9df;overflow:hidden;transition:opacity .4s}
 .title-screen::backdrop{background:#1d1416}
 .title-screen.leaving{opacity:0}
 .title-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top}
 .title-screen:after{content:'';position:absolute;left:0;right:0;bottom:0;height:20%;background:linear-gradient(#1d141600,#1d14167a);pointer-events:none}
 /* Placed on the picture's sky, not the screen: the background is cover-scaled from the top, so its height is
    max(screen height, width x 16/9); the sky is its top ~40%. The logo's centre sits at 24% of that height. */
-.title-screen{--img-h:max(100dvh,min(100vw,480px) * 1.7778)}
+.title-screen{--img-h:max(var(--app-h,100dvh),min(100vw,480px) * 1.7778)}
 .title-logo{position:absolute;left:50%;top:calc(var(--img-h) * .24);width:min(82.5%,calc(var(--img-h) * .508));transform:translate(-50%,-50%);animation:title-pop 1s cubic-bezier(.2,1.4,.4,1) both .15s}
 .title-start{position:absolute;z-index:1;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 7.5%);transform:translateX(-50%);padding:13px 52px;border:0;border-radius:30px;background:#a53948;color:#fff6ee;font:700 19px var(--serif);letter-spacing:.3em;box-shadow:0 0 0 3px #f6d2a8,0 8px 18px #0008;animation:title-breathe 2.4s ease-in-out infinite 1.2s}
 .title-start:active{transform:translateX(-50%) scale(.96)}
@@ -620,16 +620,3 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text}
 dialog:not(.album-viewer):not(.film-viewer):not(.title-screen){top:var(--sat);max-height:calc(100svh - 24px - var(--sat))}
 .ui-framed>.ui-body{max-height:calc(100svh - 24px - var(--sat))}
 
-/* v88 · Title on screens taller than the cover (most phones), the way 麻將篇 does it: the cover is shown almost whole
-   (at most 2% cut off each side, so the lamps and flower tubs stay), from the very top of the screen; the room left
-   below it is filled with a blurred copy, and 點一下畫面開始 / 開始 sit there when there is space (.dock).
-   Screens wider than the cover (Safari with its bars) keep the old full-cover picture. game.js layoutTitle sets
-   --fw/--fh (the cover's size). */
-.title-blur{display:none}
-.title-screen.tall .title-blur{display:block;position:absolute;left:-6%;top:-6%;width:112%;height:112%;object-fit:cover;filter:blur(22px) brightness(.82) saturate(1.1)}
-.title-screen.tall .title-bg{left:50%;top:0;width:var(--fw);height:var(--fh);transform:translateX(-50%);object-fit:fill;
-  -webkit-mask-image:linear-gradient(#000 0 94%,transparent);mask-image:linear-gradient(#000 0 94%,transparent)}
-.title-screen.tall{--img-h:var(--fh)}
-.title-screen.tall:after{height:calc(100% - var(--fh) + 12%)}
-.title-screen.dock .title-start{bottom:calc(var(--sab) + (100% - var(--fh) - var(--sab)) / 2 - 33px)}
-.title-screen.dock .title-tap{bottom:calc(var(--sab) + (100% - var(--fh) - var(--sab)) / 2 - 24px)}
