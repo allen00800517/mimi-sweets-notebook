@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <!-- build 2026-10-24 21:32:38 -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="甜點筆記">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#a53948">
+  <meta name="description" content="蜜蜜來到最喜歡的蛋糕店，和女主人一起整理甜點靈感，構思一份新的下午茶菜單。">
+  <title>蜜蜜的四季甜點筆記</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/mimi-serif-tc.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/mimi-sans-tc.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="motion.css">
+</head>
+<body>
+  <main class="game-shell">
+    <header class="shop-header">
+      <img class="shop-scene" src="assets/shop-v4.webp" alt="蜜蜜和 La Fraise 甜點店女主人一起構思新菜單。" fetchpriority="high">
+      <div class="title-row"><img class="title-ornament" src="assets/title-ornament-v44.webp" alt=""><h1 id="mode-title"></h1><button id="sound" class="sound-button" aria-label="開啟音效" aria-pressed="false" title="開啟音效"><img id="sound-icon" src="assets/icon-sound-off-v56.webp" alt=""><span class="sr-only" id="sound-label">音效 關</span></button></div>
+    </header>
+    <section class="table-area" aria-label="甜點靈感棋盤">
+      <div class="idea-progress">
+        <div class="score-primary"><span class="metric-label">靈感</span><strong id="score">0</strong></div>
+        <div class="progress-track" role="progressbar" aria-label="靈感進度" aria-valuemin="0" aria-valuemax="350" aria-valuenow="0"><div id="progress-fill"></div></div>
+        <span id="goal-count">0 / 350</span>
+        <span id="chapter" class="sr-only">01</span><span id="goal-name" class="sr-only">先找一點奶香與酸甜</span>
+      </div>
+      <div id="recipe-hud" class="recipe-hud" hidden aria-live="polite"></div>
+      <div class="board-frame"><div id="board" role="group" aria-label="八乘八甜點棋盤"></div><div id="board-effects" aria-hidden="true"></div><div id="board-toast" role="status" aria-live="polite"></div></div>
+      <div class="board-caption"><span id="game-status">交換相鄰甜點，湊成三個。</span><span id="combo" aria-live="polite"></span></div>
+      <aside class="conversation" aria-label="店裡的對話" data-mood="smile"><span class="portrait-frame" aria-hidden="true"><span class="character-portrait" data-character="owner" data-expression="smile"></span></span><div class="dialogue-copy"><span id="speaker">店主</span><p id="comment">一起想一道新甜點吧！</p></div></aside>
+      <div class="tools"><button id="hint"><img class="tool-flower left" src="assets/floral-sprig-v44.webp" alt=""><img src="assets/icon-hint-v56.webp" alt=""><span>提示</span><img class="tool-flower right" src="assets/floral-sprig-v44.webp" alt=""></button><button id="story"><img class="tool-flower left" src="assets/floral-sprig-v44.webp" alt=""><img src="assets/icon-menu-v56.webp" alt=""><span>選單</span><img class="tool-flower right" src="assets/floral-sprig-v44.webp" alt=""></button></div>
+    </section>
+    <div class="studio-entry"><a href="studio.html?effect=chain">聲畫試映室</a></div>
+  </main>
+
+  <dialog autofocus tabindex="-1" id="intro-dialog" class="scene-dialog ui-v1 ui-framed"><div class="ui-body">
+    <div class="scene-art intro-art"><img src="assets/shop-v4.webp" alt="蜜蜜與甜點店女主人坐在暖色蛋糕店裡，一起討論甜點。"><div class="scene-tag">商店街 · 午後</div></div>
+    <div class="scene-copy"><span class="scene-kicker">蜜蜜的寄道日記</span><h2>今天，換妳陪我想點子。</h2><div id="intro-lines"><p><b>店主</b>「想加一道新品，可是想來想去，還是那些老組合。」</p><p><b>蜜蜜</b>「那今天認真想一下！布丁先替我留著喔。」</p></div><p class="scene-instruction">交換相鄰甜點，三個相同就能消除。先試試發光的甜點吧——按「提示」就能找到它的配對。這裡沒有倒數，慢慢想也沒關係。</p><div class="ui-dock"><button id="start" class="primary-button">一起想新菜單</button></div></div>
+  </div></dialog>
+
+  <dialog autofocus tabindex="-1" id="recipe-dialog" class="scene-dialog recipe-dialog ui-v1 ui-framed"><div class="ui-body"><div class="scene-art"><img src="assets/afternoon-tea.webp" alt="店主把布丁、泡芙與草莓組成的下午茶拼盤端到蜜蜜面前，兩人相視而笑。"><div class="scene-tag">靈感完成</div></div><div class="scene-copy"><span id="recipe-kicker" class="scene-kicker">第一頁 · 酸甜與奶香</span><h2 id="recipe-title">奶香裡，加一點莓果。</h2><p id="recipe-scene" class="recipe-scene"></p><div id="recipe-lines"></div><p id="recipe-note" class="recipe-note"></p><div class="ui-dock"><button id="continue" class="primary-button">繼續想點子</button></div></div></div></dialog>
+
+  <dialog autofocus tabindex="-1" id="help-dialog" class="text-dialog help-dialog ui-v1 ui-framed"><form method="dialog" class="ui-body"><button class="close-button" aria-label="關閉玩法說明">×</button><h2>玩法說明</h2>
+    <p>點兩個相鄰的甜點交換位置，也可以直接滑動。三個以上相同的排成一線就會消除。</p>
+    <h3>特別的甜點</h3><ul><li><b>四個一排</b>→「花瓣爆破」：再配對一次，炸開周圍九格。</li><li><b>一橫一直、轉角接起來（L 或 T）</b>→「星光」：再配對一次，清掉整行和整列。</li><li><b>五個一排</b>→「彩虹糖球」：和旁邊任一個甜點交換，消掉全部同款。</li><li><b>彩虹糖球 × 花瓣爆破或星光</b>：那一款會全部變成花瓣爆破或星光，再一起發動！兩顆彩虹糖球互換，整盤清空。</li></ul>
+    <h3>試做甜點</h3><p>上方會顯示這一款要收集的甜點和數量，全部收齊就完成。目標裡有「✿ 開花」的話，要讓花瓣爆破炸開那麼多次。不限步數，用的步數越少，星星越多。</p>
+    <h3>四季的小插曲</h3><ul class="help-mech"><li><i class="ico-bud"></i><span><b>櫻花花苞</b>：在花苞上配對，花就會開。</span></li><li><i class="ico-dust"></i><span><b>糖粉</b>：在有糖粉的格子上消除，就能清掉。</span></li><li><i class="ico-mango"></i><span><b>芒果</b>：不能隨便移動。消掉它下面的甜點，或在它左右兩邊配對把它擠下去，送到最底下。</span></li><li><i class="ico-burr"></i><span><b>栗子殼</b>：在旁邊配對兩次就會剝開，剝開前不能移動。</span></li><li><i class="ico-leaf"></i><span><b>落葉</b>：每隔幾步會飄進來，在落葉上配對就能掃掉。</span></li><li><i class="ico-frost"></i><span><b>糖霜</b>：在旁邊配對一次就會敲開，敲開前不能移動。</span></li><li><i class="ico-gift"></i><span><b>禮物盒</b>：在旁邊配對就會打開，裡面是特別的甜點。</span></li></ul>
+    <h3>三種玩法</h3><ul><li><b>品嚐故事</b>：一季一款，慢慢走完四季的故事。</li><li><b>甜點筆記</b>：24 款四季甜點，收集星星和回憶。</li><li><b>無限靈感筆記</b>：24 款都做過後打開，一直做下去，挑戰最高分。</li></ul>
+    <p>沒有可交換的位置時，甜點會自動重新排列。卡住的時候，按「提示」就好。</p><div class="ui-dock"><button class="primary-button">我知道了</button></div></form></dialog>
+  <dialog autofocus tabindex="-1" id="pause-dialog" class="text-dialog pause-dialog ui-v1" aria-label="選單"><span id="pause-kicker" class="scene-kicker"></span><h2 id="pause-title">休息一下</h2><p id="pause-note" class="menu-intro"></p><button id="pause-resume" class="primary-button">繼續</button><div class="pause-list"><button id="restart">重新開始</button><button id="how-to">玩法說明</button><button id="pause-leave">回甜點筆記</button></div><p id="pause-best" class="pause-best">最佳紀錄 <b id="best">0</b> 分</p></dialog>
+  <dialog autofocus tabindex="-1" id="tip-dialog" class="text-dialog tip-dialog ui-v1" aria-label="小提示"><span id="tip-kicker" class="scene-kicker">小提示</span><img id="tip-img" class="tip-img" alt=""><span id="tip-live" class="tip-live" aria-hidden="true" hidden></span><h2 id="tip-title"></h2><p id="tip-text"></p><button id="tip-ok" class="primary-button">知道了</button></dialog>
+  <dialog autofocus tabindex="-1" id="confirm-dialog" class="text-dialog ui-v1"><h2>重新想一份新菜單？</h2><p>本次分數會歸零，最佳紀錄會保留。</p><div class="confirm-actions"><button id="cancel-restart">繼續這一局</button><button id="confirm-restart" class="primary-button">重新開始</button></div></dialog>
+
+  <dialog autofocus tabindex="-1" id="mode-dialog" class="text-dialog mode-dialog ui-v1" aria-label="選擇模式">
+    <h2>今天想怎麼做甜點？</h2>
+    <button id="mode-easy" class="mode-card easy"><span class="mode-art"><img src="assets/thumb-spring-open-v52.webp" alt=""></span><span class="mode-copy"><b>品嚐故事</b><small>和她走過四季・約 15 分鐘</small><span id="mode-easy-progress" class="mode-progress"></span></span></button>
+    <button id="mode-full" class="mode-card full"><span class="mode-art"><img src="assets/dessert-r12-v45.webp" alt=""></span><span class="mode-copy"><b>甜點筆記</b><small id="mode-full-sub">24 款四季甜點・收集星星</small><span id="mode-full-progress" class="mode-progress"></span></span><span class="mode-lock" aria-hidden="true"><span class="mode-note"><span id="mode-note-face"></span><span class="mode-note-text">「等妳把四季都走一遍，<br>我們再一起打開喔♡」</span></span></span></button>
+    <button id="mode-inf" class="mode-card inf" hidden><span class="mode-art"><img src="assets/story-berry-v44.webp" alt=""></span><span class="mode-copy"><b id="mode-inf-title">無限靈感筆記</b><small id="mode-inf-sub">想到哪做到哪・挑戰最高分</small><span id="mode-inf-progress" class="mode-progress"></span></span></button>
+    <p id="mode-hint" class="mode-hint" aria-live="polite"></p>
+    <div class="hub-icons"><button id="mode-album" class="hub-icon"><img src="assets/icon-album-v59.webp" alt=""><span>回憶相簿</span></button><button id="mode-exit" class="hub-icon"><img src="assets/icon-exit-v59.webp" alt=""><span>回到餐廳</span></button></div>
+  </dialog>
+  <dialog autofocus tabindex="-1" id="easy-dialog" class="text-dialog menu-dialog ui-v1"><button id="easy-home" class="back-link">‹ 選擇模式</button><h2>品嚐故事</h2><p class="menu-intro">一季一款招牌甜點，慢慢做就好，沒有步數壓力。</p><div id="easy-levels"></div><div class="confirm-actions sticky-actions"><button data-proxy="easy-home" aria-label="返回">返回</button></div></dialog>
+  <dialog autofocus tabindex="-1" id="menu-dialog" class="text-dialog menu-dialog ui-v1"><button id="menu-home" class="back-link">‹ 選擇模式</button><h2>甜點筆記</h2><p class="menu-intro">一款一款試做新甜點。不限步數，步數越少星星越多。</p><div id="menu-levels"></div><div class="confirm-actions sticky-actions"><button data-proxy="menu-home" aria-label="返回">返回</button></div></dialog>
+  <dialog autofocus tabindex="-1" id="inf-dialog" class="text-dialog menu-dialog inf-dialog ui-v1"><button id="inf-home" class="back-link">‹ 選擇模式</button><h2>無限靈感筆記</h2><p class="menu-intro">想到哪裡，就做到哪裡。做得越多、越快，分數越高；從第 11 款起每款有步數限制，用完了就再做一次。</p><div id="inf-stats" class="inf-stats"></div><button id="inf-go" class="primary-button">開始</button><button id="inf-new" class="text-button" hidden>重新開始一輪</button><div class="confirm-actions sticky-actions"><button data-proxy="inf-home" aria-label="返回">返回</button><button id="inf-collection">靈感收藏</button></div></dialog>
+  <dialog autofocus tabindex="-1" id="coll-dialog" class="text-dialog menu-dialog coll-dialog ui-v1"><button id="coll-back" class="back-link">‹ 無限靈感筆記</button><h2>靈感收藏</h2><p id="coll-count" class="menu-intro"></p><div id="coll-list"></div><div class="confirm-actions sticky-actions"><button data-proxy="coll-back" aria-label="返回">返回</button></div></dialog>
+  <dialog autofocus tabindex="-1" id="level-dialog" class="scene-dialog level-dialog ui-v1 ui-framed"><div class="ui-body"><div id="level-art" class="level-art"></div><div class="scene-copy"><span id="level-kicker" class="scene-kicker"></span><h2 id="level-title"></h2><div id="level-lines"></div><div id="level-goals"></div><p id="level-rule"></p><div class="ui-dock"><button id="level-start" class="primary-button">開始試做</button><button id="level-back" class="text-button">回甜點筆記</button></div></div></div></dialog>
+  <dialog autofocus tabindex="-1" id="taste-dialog" class="scene-dialog taste-dialog ui-v1 ui-framed"><div class="ui-body"><div id="taste-art" class="taste-art"></div><div class="scene-copy"><span class="scene-kicker">試吃時間</span><h2 id="taste-title"></h2><div id="taste-stars" aria-label="獲得星等"></div><p id="taste-moves"></p><div id="taste-lines"></div><div class="confirm-actions ui-dock"><button id="taste-menu">甜點筆記</button><button id="taste-next" class="primary-button">下一款</button></div></div></div></dialog>
+  <dialog id="album-dialog" class="album-viewer" aria-label="回憶相簿">
+    <div id="album-wall" class="av-wall"><div id="album-wall-photos" class="av-wall-photos"></div><div id="album-music" class="av-music" hidden><p id="album-music-count" class="av-music-count"></p><div id="album-music-list" class="av-music-list"></div></div></div>
+    <div id="album-track" class="av-track"></div>
+    <div class="av-top"><span class="av-name">回憶相簿</span><span class="av-tabs" role="tablist"><button id="album-tab-photos" role="tab" class="on" aria-selected="true">照片</button><button id="album-tab-music" role="tab" aria-selected="false">音樂盒</button></span><span id="album-count" class="av-count"></span><button id="album-close" class="av-close" aria-label="關閉回憶相簿"><img src="assets/icon-close-v56.webp" alt=""></button></div>
+    <div id="album-dots" class="av-dots" aria-hidden="true"></div>
+  </dialog>
+  <dialog id="title-dialog" class="title-screen" aria-label="蜜蜜的四季甜點筆記">
+    <img class="title-bg" src="assets/title-bg-v50.webp" alt="蜜蜜和苺香在 La Fraise 甜點店門口，春天的櫻花和藍天。" fetchpriority="high">
+    <div class="title-logo-box" aria-hidden="false"><span class="title-bloom" aria-hidden="true"></span><span class="title-win"><img class="title-logo" onload="this.classList.add('loaded');this.closest('.title-logo-box').classList.add('loaded')" src="assets/title-logo-jp2a-v54.webp" alt="ミーミーの四季スイーツノート！ラ・フレーズ篇（蜜蜜的四季甜點筆記）"></span><span class="title-shine" aria-hidden="true"><i></i></span><span class="title-sweep" aria-hidden="true"><i></i></span><span class="title-rider" aria-hidden="true"><i></i></span><span class="title-stars" aria-hidden="true"><i class="dust d1"></i><i class="dust d2"></i><i class="dust d3"></i><i class="dust d4"></i><i class="dust d5"></i><i class="dust d6"></i><i class="dust d7"></i><i class="dust d8"></i><i class="dust d9"></i><i class="dust d10"></i><i class="dust d11"></i><i class="dust d12"></i><i class="dust d13"></i><i class="dust d14"></i><i class="dust d15"></i><i class="dust d16"></i><i class="dust d17"></i><i class="dust d18"></i><i class="dust d19"></i><i class="dust d20"></i><i class="dust d21"></i><i class="dust d22"></i><i class="dust d23"></i><i class="dust d24"></i><i class="dust d25"></i><i class="dust d26"></i><i class="dust d27"></i><i class="dust d28"></i><i class="dust d29"></i><i class="dust d30"></i><i class="dust d31"></i><i class="dust d32"></i><i class="dust d33"></i><i class="dust d34"></i><i class="dust d35"></i><i class="dust d36"></i><i class="dust d37"></i><i class="dust d38"></i><i class="dust d39"></i><i class="dust d40"></i><i class="gd gd1"></i><i class="gd gd2"></i><i class="gd gd3"></i><i class="gd gd4"></i><i class="gd gd5"></i><i class="gd gd6"></i><i class="gd gd7"></i><i class="gd gd8"></i><i class="gd gd9"></i><i class="gd gd10"></i><i class="gd gd11"></i><i class="gd gd12"></i><i class="gd gd13"></i><i class="gd gd14"></i><i class="gd gd15"></i><i class="gd gd16"></i><i class="gd gd17"></i><i class="gd gd18"></i><i class="gl g1"></i><i class="gl g2"></i><i class="gl g3"></i><i class="gl g4"></i><i class="gl g5"></i><i class="gl g6"></i><i class="gl g7"></i></span></div>
+    <button id="title-start" class="title-start">開始</button>
+  </dialog>
+  <dialog id="film-dialog" class="film-viewer" aria-label="終章">
+    <div id="film-stage" class="film-stage"></div>
+    <div class="film-shade" aria-hidden="true"></div>
+    <div id="film-title" class="film-title"></div>
+    <div id="film-sub" class="film-sub" aria-live="polite"></div>
+    <div id="film-hint" class="film-hint">點一下繼續</div>
+    <button id="film-skip" class="film-skip" aria-label="略過"><img src="assets/icon-skip-v56.webp" alt=""><span>略過</span></button>
+  </dialog>
+  <dialog autofocus tabindex="-1" id="chapter-dialog" class="scene-dialog ui-v1 ui-framed"><div class="ui-body"><div id="chapter-art" class="scene-art" hidden><img alt=""></div><div class="scene-copy"><span id="chapter-kicker" class="scene-kicker"></span><h2 id="chapter-title"></h2><div id="chapter-lines"></div><div class="ui-dock"><button id="chapter-close" class="primary-button">回到甜點筆記</button><button id="chapter-alt" class="text-button" hidden>回品嚐故事</button></div></div></div></dialog>
+  <div id="announcer" class="sr-only" role="status" aria-live="polite"></div>
+  <script type="module" src="game.js"></script>
+<script src="pwa.js"></script>
+</body>
+</html>
