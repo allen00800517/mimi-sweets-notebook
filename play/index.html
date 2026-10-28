@@ -2,12 +2,12 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8">
-  <!-- build 2026-10-24 21:32:38 -->
+  <!-- build 2026-10-29 03:22:29 -->
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icon-180.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="甜點筆記">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#a53948">
@@ -79,9 +79,11 @@
     <div class="av-top"><span class="av-name">回憶相簿</span><span class="av-tabs" role="tablist"><button id="album-tab-photos" role="tab" class="on" aria-selected="true">照片</button><button id="album-tab-music" role="tab" aria-selected="false">音樂盒</button></span><span id="album-count" class="av-count"></span><button id="album-close" class="av-close" aria-label="關閉回憶相簿"><img src="assets/icon-close-v56.webp" alt=""></button></div>
     <div id="album-dots" class="av-dots" aria-hidden="true"></div>
   </dialog>
-  <dialog id="title-dialog" class="title-screen" aria-label="蜜蜜的四季甜點筆記">
+  <dialog id="title-dialog" class="title-screen await-tap" aria-label="蜜蜜的四季甜點筆記">
     <img class="title-bg" src="assets/title-bg-v50.webp" alt="蜜蜜和苺香在 La Fraise 甜點店門口，春天的櫻花和藍天。" fetchpriority="high">
-    <div class="title-logo-box" aria-hidden="false"><span class="title-bloom" aria-hidden="true"></span><span class="title-win"><img class="title-logo" onload="this.classList.add('loaded');this.closest('.title-logo-box').classList.add('loaded')" src="assets/title-logo-jp2a-v54.webp" alt="ミーミーの四季スイーツノート！ラ・フレーズ篇（蜜蜜的四季甜點筆記）"></span><span class="title-shine" aria-hidden="true"><i></i></span><span class="title-sweep" aria-hidden="true"><i></i></span><span class="title-rider" aria-hidden="true"><i></i></span><span class="title-stars" aria-hidden="true"><i class="dust d1"></i><i class="dust d2"></i><i class="dust d3"></i><i class="dust d4"></i><i class="dust d5"></i><i class="dust d6"></i><i class="dust d7"></i><i class="dust d8"></i><i class="dust d9"></i><i class="dust d10"></i><i class="dust d11"></i><i class="dust d12"></i><i class="dust d13"></i><i class="dust d14"></i><i class="dust d15"></i><i class="dust d16"></i><i class="dust d17"></i><i class="dust d18"></i><i class="dust d19"></i><i class="dust d20"></i><i class="dust d21"></i><i class="dust d22"></i><i class="dust d23"></i><i class="dust d24"></i><i class="dust d25"></i><i class="dust d26"></i><i class="dust d27"></i><i class="dust d28"></i><i class="dust d29"></i><i class="dust d30"></i><i class="dust d31"></i><i class="dust d32"></i><i class="dust d33"></i><i class="dust d34"></i><i class="dust d35"></i><i class="dust d36"></i><i class="dust d37"></i><i class="dust d38"></i><i class="dust d39"></i><i class="dust d40"></i><i class="gd gd1"></i><i class="gd gd2"></i><i class="gd gd3"></i><i class="gd gd4"></i><i class="gd gd5"></i><i class="gd gd6"></i><i class="gd gd7"></i><i class="gd gd8"></i><i class="gd gd9"></i><i class="gd gd10"></i><i class="gd gd11"></i><i class="gd gd12"></i><i class="gd gd13"></i><i class="gd gd14"></i><i class="gd gd15"></i><i class="gd gd16"></i><i class="gd gd17"></i><i class="gd gd18"></i><i class="gl g1"></i><i class="gl g2"></i><i class="gl g3"></i><i class="gl g4"></i><i class="gl g5"></i><i class="gl g6"></i><i class="gl g7"></i></span></div>
+    <div class="title-logo-box"><span class="title-bob"><span class="title-pop"><span class="title-bloom" aria-hidden="true"></span><img class="title-logo" onload="this.classList.add('loaded');this.closest('.title-logo-box').classList.add('loaded')" src="assets/title-logo-jp2a-v54.webp" alt="ミーミーの四季スイーツノート！ラ・フレーズ篇（蜜蜜的四季甜點筆記）"><span class="title-shine" aria-hidden="true"><i></i></span><span class="title-stars" aria-hidden="true"><i class="gl g1"></i><i class="gl g2"></i><i class="gl g3"></i><i class="gl g4"></i><i class="gl g5"></i><i class="gl g6"></i><i class="gl g7"></i><i class="gd gd1"></i><i class="gd gd2"></i><i class="gd gd3"></i><i class="gd gd4"></i><i class="gd gd5"></i><i class="gd gd6"></i><i class="gd gd7"></i><i class="gd gd8"></i><i class="gd gd9"></i><i class="gd gd10"></i><i class="gd gd11"></i><i class="gd gd12"></i><i class="gd gd13"></i><i class="gd gd14"></i><i class="gd gd15"></i><i class="gd gd16"></i><i class="gd gd17"></i><i class="gd gd18"></i></span></span></span></div>
+    <div class="title-burst" aria-hidden="true"></div>
+    <button id="title-tap" class="title-tap">點一下畫面開始</button>
     <button id="title-start" class="title-start">開始</button>
   </dialog>
   <dialog id="film-dialog" class="film-viewer" aria-label="終章">

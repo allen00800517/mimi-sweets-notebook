@@ -81,6 +81,9 @@ export function createMusic(enabled, { contextFactory = () => new (window.AudioC
   }
   // Warm up the next tune's download (not decoded) so a switch doesn't wait on the network.
   const prefetch = key => { if (TRACKS[key]) fetch(TRACKS[key].url).catch(() => {}); };
+  // Download and decode a tune ahead (the title theme while 「點一下畫面開始」 waits), so the tap starts it at once.
+  // The audio context made here stays suspended until a tap resumes it (sync).
+  const preload = key => { if (TRACKS[key] && enabled() && ensure()) void load(key); };
   function duck(seconds) {
     if (!ctx || !source || !enabled()) return; const g = gain.gain, t = ctx.currentTime;
     g.cancelScheduledValues(t); g.setValueAtTime(g.value, t); g.linearRampToValueAtTime(DUCKED, t + .12);
@@ -93,6 +96,6 @@ export function createMusic(enabled, { contextFactory = () => new (window.AudioC
     gain.gain.cancelScheduledValues(0); gain.gain.value = 0;
     if (ctx.state === 'running') ctx.suspend().catch(() => {});
   };
-  return { sync, play, prefetch, restart: () => sync(true), duck, pause,
+  return { sync, play, prefetch, preload, restart: () => sync(true), duck, pause,
     state: () => ({ playing: !!source && ctx?.state === 'running', track: playing, want, level: gain?.gain.value ?? 0, position: source ? (ctx.currentTime - startedAt) : 0 }) };
 }

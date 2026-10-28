@@ -1026,34 +1026,115 @@ render(); showGuide();
 // The play screen always fits one phone screen (Safari bars, the Claude app's toolbar, short phones):
 // the shop picture takes whatever height is left over; when there's none, the title tucks up and
 // the board shrinks a little rather than pushing the buttons off screen.
+// v87 · In the home-screen version the page also runs under the (translucent) status bar: the shop picture may
+// sit beneath it, but the title row and everything else stay below it (--sat, measured by a probe).
+const safeProbe = document.body.appendChild(Object.assign(document.createElement('div'), { className: 'safe-probe' }));
+const safeTop = () => safeProbe.offsetHeight;
 function fitLayout() {
   // (see below) the picture's crop moves up to the shelves when it is only a strip, so no face is cut at the eyes
   const shell = document.querySelector('.game-shell'), scene = shell.querySelector('.shop-scene'), frame = shell.querySelector('.board-frame');
-  const vh = Math.round(window.visualViewport?.height || innerHeight), w = shell.clientWidth;
+  const vh = Math.round(window.visualViewport?.height || innerHeight), w = shell.clientWidth, sat = safeTop();
   shell.classList.remove('compact'); frame.style.width = ''; scene.style.height = '0px'; shell.style.paddingTop = '';
-  let room = vh - shell.getBoundingClientRect().height;
+  let room = vh - shell.getBoundingClientRect().height - sat; // what is left below the status bar
   scene.style.objectPosition = room < w * .34 ? 'center 6%' : '';
-  if (room >= w * .16) { scene.style.height = Math.min(w * .61, room) + 'px'; return; }
+  if (room >= w * .16) { scene.style.height = Math.min(w * .61, room) + sat + 'px'; return; }
   shell.classList.add('compact');
-  room = vh - shell.getBoundingClientRect().height;
+  room = vh - shell.getBoundingClientRect().height - sat;
   // Fill the screen (no dark strip left under the buttons). In Safari, whose bars leave only a sliver, a strip of
   // picture that thin just looks cut off, so the shop picture steps aside and the spare room stays plain cream.
-  if (room >= w * .12) { scene.style.height = room + 'px'; scene.style.objectPosition = 'center 6%'; return; }
-  if (room >= 0) { shell.style.paddingTop = room + 'px'; return; }
+  if (room >= w * .12) { scene.style.height = room + sat + 'px'; scene.style.objectPosition = 'center 6%'; return; }
+  if (room >= 0) { shell.style.paddingTop = room + sat + 'px'; return; }
+  if (sat) shell.style.paddingTop = sat + 'px';
   frame.style.width = Math.max(w * .7, frame.getBoundingClientRect().width + room) + 'px';
 }
 var fitTimer = 0; // hoisted: reset() may refit before this line has run
 function refit() { cancelAnimationFrame(fitTimer); fitTimer = requestAnimationFrame(() => { fitLayout(); document.querySelector('.game-shell').classList.add('ready'); }); }
 window.addEventListener('resize', refit); window.visualViewport?.addEventListener('resize', refit);
 document.fonts?.ready.then(refit); refit();
-// Title screen first; its tap also unlocks sound on phones. Then returning players go to the notebook,
-// first-timers to the opening story (the tutorial).
+// Title screen (v87): the same entrance as the series' other games (八百屋篇・麻將篇). The cover shows first with
+// 「點一下畫面開始」; that tap starts the music (and unlocks sound on phones) and the logo pops in on it while desserts
+// from the board fly out; 開始 then slides up and leads to the menu. Coming back to the title later (when no host app
+// takes the 「回到餐廳」 exit) skips the tap: the music is already playing.
 const afterTitle = () => openHub(); // the main app's surprise animation already told the opening; the game starts at its menu
+// Same numbers as the 麻將篇／八百屋篇 logo pop: elastic overshoot over 0.9 s, tilted -10.3° and straightening as it lands.
+const TITLE_POP = { musicWait: 1200, artWait: 2500, dur: 900, startAt: 750, startDur: 350, tilt: -10.3 };
+const TITLE_BURST = ['cake-v24.png', 'macaron-v30.png', 'choux-v29.png', 'donut-v29.png', 'tart-v29.png', 'cone-v29.png', 'pudding-v5.png', 'cake-v24.png', 'macaron-v30.png', 'tart-v29.png'];
+const elastic = t => t <= 0 ? 0 : t >= 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - .75) * (2 * Math.PI / 3)) + 1;
+function logoPopFrames(n = 36) {
+  const f = [];
+  for (let i = 0; i <= n; i++) { const k = i / n, rot = (1 - Math.min(1, k * 1.4)) * TITLE_POP.tilt; f.push({ offset: k, transform: `rotate(${rot.toFixed(2)}deg) scale(${elastic(k).toFixed(4)})` }); }
+  return f;
+}
+let titleTapped = false, titleRaf = 0, titleTimer = 0, titleAnims = [];
+// Desserts from the board (and a few gold sparks) fly out of the logo under gravity; speeds follow 八百屋篇,
+// scaled by the screen width (its canvas was ~390 px wide).
+function titleBurst(dialog) {
+  const box = dialog.querySelector('.title-burst'), host = dialog.getBoundingClientRect(), logo = dialog.querySelector('.title-logo-box').getBoundingClientRect();
+  const fw = host.width, u = fw / 390, cx = logo.left - host.left + logo.width / 2, cy = logo.top - host.top + logo.height / 2, rand = Math.random;
+  const parts = TITLE_BURST.map(src => {
+    const a = -Math.PI * .5 + (rand() - .5) * Math.PI * 1.7, sp = (260 + rand() * 300) * u, size = fw * (.13 + rand() * .05);
+    return { src, x: cx + (rand() - .5) * logo.width * .5, y: cy + (rand() - .5) * logo.height * .3, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 120 * u, g: 620 * u, size, rot: rand() * 6, vr: (rand() - .5) * 9, life: 1.7 + rand() * .5 };
+  });
+  for (let i = 0; i < 14; i++) { const a = rand() * Math.PI * 2, sp = (160 + rand() * 220) * u; parts.push({ x: cx, y: cy, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp * .7, g: 200 * u, size: (10 + rand() * 12) * u, rot: 0, vr: 0, life: .7 }); }
+  let live = parts.map(p => {
+    const n = document.createElement(p.src ? 'img' : 'i'); n.className = 'title-p ' + (p.src ? 'dessert' : 'spark');
+    if (p.src) { n.src = 'assets/' + p.src; n.alt = ''; n.draggable = false; }
+    n.style.width = n.style.height = p.size + 'px'; box.append(n); return { p, n };
+  });
+  const t0 = performance.now();
+  const step = now => {
+    const t = (now - t0) / 1000;
+    live = live.filter(({ p, n }) => {
+      if (t >= p.life || !dialog.open) { n.remove(); return false; }
+      const left = 1 - t / p.life, x = p.x + p.vx * t, y = p.y + p.vy * t + .5 * p.g * t * t;
+      n.style.transform = `translate(${(x - p.size / 2).toFixed(1)}px,${(y - p.size / 2).toFixed(1)}px) rotate(${(p.rot + p.vr * t).toFixed(3)}rad) scale(${p.src ? Math.min(1, t * 8).toFixed(3) : 1})`;
+      n.style.opacity = (p.src ? Math.max(0, Math.min(1, left * 3)) : Math.max(0, left)).toFixed(3); return true;
+    });
+    titleRaf = live.length ? requestAnimationFrame(step) : 0;
+  };
+  titleRaf = requestAnimationFrame(step);
+}
+function popTitle(dialog) {
+  if (!dialog.open || dialog.classList.contains('popping') || dialog.classList.contains('popped')) return;
+  const pop = dialog.querySelector('.title-pop');
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !pop.animate) { dialog.classList.add('popped'); return; }
+  dialog.classList.add('popping'); dialog.dataset.popAt = String(Math.round(performance.now()));
+  titleAnims = [pop.animate(logoPopFrames(), { duration: TITLE_POP.dur, easing: 'linear', fill: 'both' }),
+  $('title-start').animate([{ opacity: 0, translate: '0 22px' }, { opacity: 1, translate: '0 0' }], { duration: TITLE_POP.startDur, delay: TITLE_POP.startAt, easing: 'ease-out', fill: 'backwards' })];
+  titleBurst(dialog);
+  titleTimer = setTimeout(() => { dialog.classList.remove('popping'); dialog.classList.add('popped'); }, TITLE_POP.dur);
+}
 function showTitle() {
-  const dialog = $('title-dialog');
-  $('title-start').onclick = () => { dialog.classList.add('leaving'); void music.sync(); setTimeout(() => { dialog.close(); dialog.classList.remove('leaving'); afterTitle(); }, window.__CAKE_TEST_FAST__ ? 0 : 420); };
+  const dialog = $('title-dialog'), bg = dialog.querySelector('.title-bg'), logo = dialog.querySelector('.title-logo');
+  clearTimeout(titleTimer); cancelAnimationFrame(titleRaf); dialog.querySelector('.title-burst').replaceChildren();
+  titleAnims.forEach(a => a.cancel()); titleAnims = []; // replay the pop when coming back
+  dialog.classList.remove('popping', 'popped', 'ready', 'leaving');
+  const tapFirst = !titleTapped; dialog.classList.toggle('await-tap', tapFirst);
+  $('title-start').onclick = () => {
+    if (!dialog.classList.contains('popped') || dialog.classList.contains('leaving')) return;
+    dialog.classList.add('leaving'); void music.sync();
+    setTimeout(() => { dialog.close(); dialog.classList.remove('leaving'); afterTitle(); }, window.__CAKE_TEST_FAST__ ? 0 : 420);
+  };
   dialog.oncancel = event => event.preventDefault();
   dialog.showModal();
+  // The prompt appears only once the cover is on screen, never over an empty background; the pop waits for the
+  // cover and the logo to be decoded (at most 2.5 s) so it is never spent on a blank screen.
+  const shown = () => dialog.classList.add('ready');
+  if (bg.complete && bg.naturalWidth) shown(); else { bg.addEventListener('load', shown, { once: true }); setTimeout(shown, 5000); }
+  const art = Promise.race([Promise.all([bg, logo].map(i => i.decode ? i.decode().catch(() => {}) : null)), new Promise(r => setTimeout(r, TITLE_POP.artWait))]);
+  for (const src of new Set(TITLE_BURST)) { const i = new Image(); i.src = 'assets/' + src; }
+  if (!tapFirst) { art.then(() => popTitle(dialog)); $('title-start').focus({ preventScroll: true }); return; }
+  if (record.sound) music.preload('spring1'); // decoded while the prompt waits, so the tap starts it at once
+  const go = () => {
+    if (!dialog.classList.contains('await-tap') || !dialog.classList.contains('ready')) return;
+    titleTapped = true; dialog.classList.remove('await-tap'); dialog.removeEventListener('click', go);
+    // The tap starts the shop theme from its beginning (no fade), and the logo pops as it comes in.
+    const theme = record.sound ? music.play('spring1', true, { cut: true }) : null;
+    const heard = Promise.race([theme, new Promise(r => setTimeout(r, theme ? TITLE_POP.musicWait : 0))]);
+    Promise.all([art, heard]).then(() => popTitle(dialog));
+  };
+  dialog.addEventListener('click', go);
+  $('title-tap').focus({ preventScroll: true });
 }
 if (new URLSearchParams(location.search).get('finale') === '1') showFinale(afterTitle); // preview link for the finale
 else if (new URLSearchParams(location.search).get('title') === '0') afterTitle();
