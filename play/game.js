@@ -1029,7 +1029,7 @@ render(); showGuide();
 // v87 · In the home-screen version the page also runs under the (translucent) status bar: the shop picture may
 // sit beneath it, but the title row and everything else stay below it (--sat, measured by a probe).
 const safeProbe = document.body.appendChild(Object.assign(document.createElement('div'), { className: 'safe-probe' }));
-const safeTop = () => safeProbe.offsetHeight;
+const safeTop = () => safeProbe.offsetHeight, safeBottom = () => safeProbe.offsetWidth;
 function fitLayout() {
   // (see below) the picture's crop moves up to the shelves when it is only a strip, so no face is cut at the eyes
   const shell = document.querySelector('.game-shell'), scene = shell.querySelector('.shop-scene'), frame = shell.querySelector('.board-frame');
@@ -1104,6 +1104,19 @@ function popTitle(dialog) {
   titleBurst(dialog);
   titleTimer = setTimeout(() => { dialog.classList.remove('popping'); dialog.classList.add('popped'); }, TITLE_POP.dur);
 }
+// v88 · Cover layout (see style.css): on a screen taller than the 9:16 cover it is fitted almost whole from the top,
+// with a blurred copy below; the buttons move into that room when it is at least a button tall.
+const TITLE_RATIO = 900 / 1600, TITLE_CROP = .02;
+function layoutTitle() {
+  const d = $('title-dialog'); if (!d.open) return;
+  const W = d.clientWidth, H = d.clientHeight, tall = W / H < TITLE_RATIO - .002;
+  d.classList.toggle('tall', tall);
+  if (!tall) { d.classList.remove('dock'); return; }
+  const fw = Math.min(W / (1 - 2 * TITLE_CROP), H * TITLE_RATIO), fh = fw / TITLE_RATIO;
+  d.style.setProperty('--fw', fw.toFixed(1) + 'px'); d.style.setProperty('--fh', fh.toFixed(1) + 'px');
+  d.classList.toggle('dock', H - fh - safeBottom() >= 82);
+}
+window.addEventListener('resize', layoutTitle); window.visualViewport?.addEventListener('resize', layoutTitle);
 function showTitle() {
   const dialog = $('title-dialog'), bg = dialog.querySelector('.title-bg'), logo = dialog.querySelector('.title-logo');
   clearTimeout(titleTimer); cancelAnimationFrame(titleRaf); dialog.querySelector('.title-burst').replaceChildren();
@@ -1116,7 +1129,7 @@ function showTitle() {
     setTimeout(() => { dialog.close(); dialog.classList.remove('leaving'); afterTitle(); }, window.__CAKE_TEST_FAST__ ? 0 : 420);
   };
   dialog.oncancel = event => event.preventDefault();
-  dialog.showModal();
+  dialog.showModal(); layoutTitle();
   // The prompt appears only once the cover is on screen, never over an empty background; the pop waits for the
   // cover and the logo to be decoded (at most 2.5 s) so it is never spent on a blank screen.
   const shown = () => dialog.classList.add('ready');

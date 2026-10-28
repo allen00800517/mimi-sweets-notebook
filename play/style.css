@@ -11,8 +11,8 @@
 @font-face{font-family:"Mimi Sans Fill";src:url('assets/mimi-sans-fill-700.woff2') format('woff2');font-weight:700;font-display:swap}
 :root{color-scheme:light;--ink:#58382c;--red:#8c2933;--red-dark:#70232d;--cream:#fff5e3;--gold:#d3ad78;--line:#dfbd92;--teal:#214650;--serif:"Mimi Serif","Mimi Serif Fill","Noto Serif TC",serif;--sans:"Mimi Sans","Mimi Sans Fill","Microsoft JhengHei",sans-serif}
 /* v87 · the home-screen version draws under a translucent status bar: --sat is the space it takes at the top */
-:root{--sat:env(safe-area-inset-top,0px)}
-.safe-probe{position:fixed;left:0;top:0;width:0;height:var(--sat);visibility:hidden;pointer-events:none}
+:root{--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
+.safe-probe{position:fixed;left:0;top:0;width:var(--sab);height:var(--sat);visibility:hidden;pointer-events:none}
 *{box-sizing:border-box}body{margin:0;min-height:100svh;background:#193c44;color:var(--ink);font:400 14px/1.6 var(--sans)}
 button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;color:inherit}button:focus-visible{outline:3px solid #a27131;outline-offset:3px}button:disabled{cursor:wait;opacity:.78}button:active{transform:translateY(1px)}
 .game-shell{container-type:inline-size;max-width:480px;margin:0 auto;padding:0 0 max(6px,env(safe-area-inset-bottom));background:var(--cream);box-shadow:0 0 50px #08252c60;overflow:hidden}
@@ -619,3 +619,17 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text}
 /* v87 · windows stay clear of the status bar in the home-screen version (no change in Safari, where --sat is 0) */
 dialog:not(.album-viewer):not(.film-viewer):not(.title-screen){top:var(--sat);max-height:calc(100svh - 24px - var(--sat))}
 .ui-framed>.ui-body{max-height:calc(100svh - 24px - var(--sat))}
+
+/* v88 · Title on screens taller than the cover (most phones), the way 麻將篇 does it: the cover is shown almost whole
+   (at most 2% cut off each side, so the lamps and flower tubs stay), from the very top of the screen; the room left
+   below it is filled with a blurred copy, and 點一下畫面開始 / 開始 sit there when there is space (.dock).
+   Screens wider than the cover (Safari with its bars) keep the old full-cover picture. game.js layoutTitle sets
+   --fw/--fh (the cover's size). */
+.title-blur{display:none}
+.title-screen.tall .title-blur{display:block;position:absolute;left:-6%;top:-6%;width:112%;height:112%;object-fit:cover;filter:blur(22px) brightness(.82) saturate(1.1)}
+.title-screen.tall .title-bg{left:50%;top:0;width:var(--fw);height:var(--fh);transform:translateX(-50%);object-fit:fill;
+  -webkit-mask-image:linear-gradient(#000 0 94%,transparent);mask-image:linear-gradient(#000 0 94%,transparent)}
+.title-screen.tall{--img-h:var(--fh)}
+.title-screen.tall:after{height:calc(100% - var(--fh) + 12%)}
+.title-screen.dock .title-start{bottom:calc(var(--sab) + (100% - var(--fh) - var(--sab)) / 2 - 33px)}
+.title-screen.dock .title-tap{bottom:calc(var(--sab) + (100% - var(--fh) - var(--sab)) / 2 - 24px)}
