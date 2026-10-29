@@ -187,11 +187,14 @@ body.dev .studio-entry{display:block}
 .title-screen.leaving{opacity:0}
 .title-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top}
 .title-screen:after{content:'';position:absolute;left:0;right:0;bottom:0;height:20%;background:linear-gradient(#1d141600,#1d14167a);pointer-events:none}
-/* Placed on the picture's sky, not the screen. v90: the cover is the original 9:16 picture with 780 px of pavement
-   painted on below it (900×2250 in all), cover-scaled from the top, so it is drawn max(width, height / 2.5) wide.
-   --img-h is the height of the original 9:16 part: the logo's centre sits at 24% of it, the sky being its top ~40%.
-   Tall phones now show more pavement below the shop instead of losing the sides. */
-.title-screen{--img-h:max(min(100vw,480px) * 1.7778,var(--app-h,100dvh) * .7111)}
+/* v91 · The cover is drawn for phones: 1088×2400 (about 9:20), the shop's roof line at 40% of its height, the
+   characters' feet at about 79%. It is cover-scaled; when the screen is shorter than the picture (Safari with its
+   bars) the cut is shared 65% from the sky and 35% from the pavement, so the feet stay above 開始.
+   --img-h: the picture's drawn height; --img-off: where its top lands (0 or above the screen);
+   --roof: the roof line on screen. The logo sits in the sky between the status bar and the roof, sized to fit it. */
+.title-screen{--img-h:max(min(100vw,480px) * 2.2059,var(--app-h,100dvh));--img-off:calc((var(--app-h,100dvh) - var(--img-h)) * .65);
+  --roof:calc(var(--img-off) + var(--img-h) * .40)}
+.title-screen .title-bg{object-position:center 65%}
 .title-logo{position:absolute;left:50%;top:calc(var(--img-h) * .24);width:min(82.5%,calc(var(--img-h) * .508));transform:translate(-50%,-50%);animation:title-pop 1s cubic-bezier(.2,1.4,.4,1) both .15s}
 .title-start{position:absolute;z-index:1;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 7.5%);transform:translateX(-50%);padding:13px 52px;border:0;border-radius:30px;background:#a53948;color:#fff6ee;font:700 19px var(--serif);letter-spacing:.3em;box-shadow:0 0 0 3px #f6d2a8,0 8px 18px #0008;animation:title-breathe 2.4s ease-in-out infinite 1.2s}
 .title-start:active{transform:translateX(-50%) scale(.96)}
@@ -538,7 +541,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text}
    out of it with a few sparkles (game.js titleBurst). 開始 slides up 0.75 s into the pop, then the logo floats
    gently and the earlier glints / gold flecks / light band carry on. The cover fills the whole screen, under the
    status bar too (the home-screen version uses a translucent status bar). */
-.title-screen .title-logo-box{position:absolute;left:50%;top:calc(var(--img-h) * .24);width:min(82.5%,calc(var(--img-h) * .508));aspect-ratio:1016/619;transform:translate(-50%,-50%)}
+.title-screen .title-logo-box{position:absolute;left:50%;top:calc((var(--sat) + var(--roof)) / 2 - 1%);width:min(82.5%,calc((var(--roof) - var(--sat)) * 1.35));aspect-ratio:1016/619;transform:translate(-50%,-50%)}
 .title-screen .title-logo-box:not(.loaded){opacity:0}
 .title-bob,.title-pop{position:absolute;inset:0;display:block}
 .title-screen .title-logo{position:absolute;left:0;top:0;width:100%;height:100%;animation:none;transform:none}
