@@ -187,9 +187,11 @@ body.dev .studio-entry{display:block}
 .title-screen.leaving{opacity:0}
 .title-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top}
 .title-screen:after{content:'';position:absolute;left:0;right:0;bottom:0;height:20%;background:linear-gradient(#1d141600,#1d14167a);pointer-events:none}
-/* Placed on the picture's sky, not the screen: the background is cover-scaled from the top, so its height is
-   max(screen height, width x 16/9); the sky is its top ~40%. The logo's centre sits at 24% of that height. */
-.title-screen{--img-h:max(var(--app-h,100dvh),min(100vw,480px) * 1.7778)}
+/* Placed on the picture's sky, not the screen. v90: the cover is the original 9:16 picture with 780 px of pavement
+   painted on below it (900×2250 in all), cover-scaled from the top, so it is drawn max(width, height / 2.5) wide.
+   --img-h is the height of the original 9:16 part: the logo's centre sits at 24% of it, the sky being its top ~40%.
+   Tall phones now show more pavement below the shop instead of losing the sides. */
+.title-screen{--img-h:max(min(100vw,480px) * 1.7778,var(--app-h,100dvh) * .7111)}
 .title-logo{position:absolute;left:50%;top:calc(var(--img-h) * .24);width:min(82.5%,calc(var(--img-h) * .508));transform:translate(-50%,-50%);animation:title-pop 1s cubic-bezier(.2,1.4,.4,1) both .15s}
 .title-start{position:absolute;z-index:1;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 7.5%);transform:translateX(-50%);padding:13px 52px;border:0;border-radius:30px;background:#a53948;color:#fff6ee;font:700 19px var(--serif);letter-spacing:.3em;box-shadow:0 0 0 3px #f6d2a8,0 8px 18px #0008;animation:title-breathe 2.4s ease-in-out infinite 1.2s}
 .title-start:active{transform:translateX(-50%) scale(.96)}
